@@ -17,6 +17,9 @@ class GestureViewModel(application: Application) : AndroidViewModel(application)
     val isOverlayEnabled: StateFlow<Boolean> = prefManager.isOverlayEnabled
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
+    val gestureSensitivity: StateFlow<Int> = prefManager.gestureSensitivity
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 1)
+
     fun setOverlayEnabled(enabled: Boolean) {
         viewModelScope.launch {
             prefManager.setOverlayEnabled(enabled)
@@ -30,4 +33,12 @@ class GestureViewModel(application: Application) : AndroidViewModel(application)
             prefManager.saveGestureAction(type, action)
         }
     }
+
+    fun setGestureSensitivity(sensitivity: Int) {
+        viewModelScope.launch {
+            prefManager.setGestureSensitivity(sensitivity)
+        }
+    }
+
+    fun getNativeDoubleTapSetting() = com.himanshu.toxtap.util.SettingsScanner.findNativeDoubleTapSetting(getApplication())
 }

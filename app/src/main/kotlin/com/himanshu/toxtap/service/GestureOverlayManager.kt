@@ -19,6 +19,28 @@ class GestureOverlayManager(private val context: Context) {
     private val prefManager = PreferenceManager(context)
     private val scope = CoroutineScope(Dispatchers.Main)
 
+    private var swipeThreshold = 100
+    private var swipeVelocityThreshold = 100
+
+    init {
+        scope.launch {
+            prefManager.gestureSensitivity.collect { sensitivity ->
+                // 0: Low, 1: Medium, 2: High
+                // Low sensitivity = larger threshold required
+                swipeThreshold = when(sensitivity) {
+                    0 -> 200
+                    2 -> 50
+                    else -> 100
+                }
+                swipeVelocityThreshold = when(sensitivity) {
+                    0 -> 200
+                    2 -> 50
+                    else -> 100
+                }
+            }
+        }
+    }
+
     fun showOverlay() {
         if (overlayView != null) return
 
@@ -57,7 +79,7 @@ class GestureOverlayManager(private val context: Context) {
                         val diffY = e2.y - e1.y
                         val diffX = e2.x - e1.x
                         if (abs(diffX) > abs(diffY)) {
-                            if (abs(diffX) > 100 && abs(velocityX) > 100) {
+                            if (abs(diffX) > swipeThreshold && abs(velocityX) > swipeVelocityThreshold) {
                                 if (diffX > 0) {
                                     handleGesture(GestureType.SWIPE_RIGHT)
                                 } else {
@@ -65,7 +87,7 @@ class GestureOverlayManager(private val context: Context) {
                                 }
                                 return true
                             }
-                        } else if (abs(diffY) > 100 && abs(velocityY) > 100) {
+                        } else if (abs(diffY) > swipeThreshold && abs(velocityY) > swipeVelocityThreshold) {
                             if (diffY > 0) {
                                     handleGesture(GestureType.SWIPE_DOWN)
                             } else {

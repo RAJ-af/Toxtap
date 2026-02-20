@@ -21,10 +21,26 @@ class SettingsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val setting = settings[position]
+        val isGesture = isGestureRelated(setting)
+
         holder.binding.tvLabel.text = setting.label
         holder.binding.tvActivity.text = setting.activityName
         holder.binding.root.setOnClickListener { onItemClick(setting) }
         holder.binding.btnShortcut.setOnClickListener { onShortcutClick(setting) }
+
+        if (isGesture) {
+            holder.binding.tvLabel.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_menu_compass, 0, 0, 0)
+            holder.binding.tvLabel.compoundDrawablePadding = 8
+        } else {
+            holder.binding.tvLabel.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+        }
+    }
+
+    private fun isGestureRelated(setting: com.himanshu.toxtap.model.ScannedSetting): Boolean {
+        val keywords = listOf("gesture", "tap", "wake", "motion", "double", "lift")
+        val label = setting.label.lowercase()
+        val activity = setting.activityName.lowercase()
+        return keywords.any { label.contains(it) || activity.contains(it) }
     }
 
     override fun getItemCount() = settings.size

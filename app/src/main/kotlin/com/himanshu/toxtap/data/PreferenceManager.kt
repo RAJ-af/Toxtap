@@ -16,6 +16,7 @@ class PreferenceManager(private val context: Context) {
 
     companion object {
         val OVERLAY_ENABLED = booleanPreferencesKey("overlay_enabled")
+        val GESTURE_SENSITIVITY = intPreferencesKey("gesture_sensitivity")
 
         fun getGestureKey(type: GestureType) = stringPreferencesKey("gesture_${type.name}")
         fun getGestureDataKey(type: GestureType) = stringPreferencesKey("gesture_data_${type.name}")
@@ -29,6 +30,16 @@ class PreferenceManager(private val context: Context) {
     suspend fun setOverlayEnabled(enabled: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[OVERLAY_ENABLED] = enabled
+        }
+    }
+
+    val gestureSensitivity: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[GESTURE_SENSITIVITY] ?: 1 // Default to Medium
+    }
+
+    suspend fun setGestureSensitivity(sensitivity: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[GESTURE_SENSITIVITY] = sensitivity
         }
     }
 

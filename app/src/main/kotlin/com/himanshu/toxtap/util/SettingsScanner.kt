@@ -7,6 +7,8 @@ import com.himanshu.toxtap.model.ScannedSetting
 
 object SettingsScanner {
 
+    private val GESTURE_KEYWORDS = listOf("gesture", "tap", "wake", "motion", "double", "lift")
+
     fun scanSettings(context: Context): List<ScannedSetting> {
         val pm = context.packageManager
         val intent = Intent(Intent.ACTION_MAIN)
@@ -25,6 +27,20 @@ object SettingsScanner {
                 packageName = resolveInfo.activityInfo.packageName,
                 activityName = resolveInfo.activityInfo.name
             )
-        }.sortedBy { it.label }
+        }.sortedWith(compareByDescending<ScannedSetting> { isGestureRelated(it) }.thenBy { it.label })
+    }
+
+    private fun isGestureRelated(setting: ScannedSetting): Boolean {
+        val label = setting.label.lowercase()
+        val activity = setting.activityName.lowercase()
+        return GESTURE_KEYWORDS.any { label.contains(it) || activity.contains(it) }
+    }
+
+    fun findNativeDoubleTapSetting(context: Context): ScannedSetting? {
+        val settings = scanSettings(context)
+        return settings.find {
+            val label = it.label.lowercase()
+            (label.contains("double tap") || label.contains("tap to wake")) && !it.activityName.contains("Demo")
+        }
     }
 }

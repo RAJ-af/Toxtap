@@ -4,10 +4,11 @@ ToxTap is a gesture, shortcut, and accessibility utility app for Android. It all
 
 ## Features
 
-- **Gesture Control System**: Perform actions using Double Tap or Swipes (Up, Down, Left, Right) anywhere on the screen via a transparent overlay.
+- **Gesture Control System**: Perform actions using Double Tap or Swipes (Up, Down, Left, Right) anywhere on the screen via a transparent overlay. Includes adjustable sensitivity control.
 - **Accessibility Actions**: Quick access to Back, Home, Recents, Notifications, and Lock Screen.
 - **Shortcut Maker**: Pin shortcuts to your home screen for accessibility actions or specific app screens.
-- **Settings Scanner**: Discover and open activities from the system Settings app.
+- **Settings Scanner**: Discover and open activities from the system Settings app. Smart-detects and prioritizes gesture and motion-related settings.
+- **Native Gesture Integration**: Detects if your device has native gesture support (like Double Tap to Wake) and recommends using it for optimal performance.
 - **Foreground Stability**: Persistent background service ensures the gesture engine remains active.
 
 ## Permissions Required
