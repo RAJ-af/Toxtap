@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.himanshu.toxtap.ui.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_gestureSettingsFragment"
+            app:destination="@id/gestureSettingsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_shortcutMakerFragment"
+            app:destination="@id/shortcutMakerFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_settingsScannerFragment"
+            app:destination="@id/settingsScannerFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_stabilityFragment"
+            app:destination="@id/stabilityFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/gestureSettingsFragment"
+        android:name="com.himanshu.toxtap.ui.gesture.GestureSettingsFragment"
+        android:label="Gesture Settings"
+        tools:layout="@layout/fragment_gesture_settings" />
+
+    <fragment
+        android:id="@+id/shortcutMakerFragment"
+        android:name="com.himanshu.toxtap.ui.shortcut.ShortcutMakerFragment"
+        android:label="Shortcut Maker"
+        tools:layout="@layout/fragment_shortcut_maker" />
+
+    <fragment
+        android:id="@+id/settingsScannerFragment"
+        android:name="com.himanshu.toxtap.ui.scanner.SettingsScannerFragment"
+        android:label="Settings Scanner"
+        tools:layout="@layout/fragment_settings_scanner" />
+
+    <fragment
+        android:id="@+id/stabilityFragment"
+        android:name="com.himanshu.toxtap.ui.stability.StabilityFragment"
+        android:label="Stability Settings"
+        tools:layout="@layout/fragment_stability" />
+
+</navigation>

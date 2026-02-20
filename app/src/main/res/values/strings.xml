@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ToxTap</string>
+    <string name="accessibility_service_label">ToxTap Accessibility Service</string>
+    <string name="accessibility_service_description">ToxTap uses this service to perform global actions like Back, Home, and Recents based on your gestures.</string>
+    <string name="notification_channel_name">ToxTap Service</string>
+    <string name="notification_text">ToxTap is running in the background.</string>
 </resources>
