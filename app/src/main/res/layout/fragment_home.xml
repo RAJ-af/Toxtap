@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ToxTap Home"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_home_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Checking permissions..."
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btn_gesture_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gesture Controls" />
+
+    <Button
+        android:id="@+id/btn_shortcut_maker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Shortcut Maker" />
+
+    <Button
+        android:id="@+id/btn_settings_scanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Settings Scanner" />
+
+    <Button
+        android:id="@+id/btn_accessibility_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Accessibility Actions" />
+
+    <Button
+        android:id="@+id/btn_stability_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stability Settings" />
+
+</LinearLayout>
