@@ -12,7 +12,17 @@ class ToxTapAccessibilityService : AccessibilityService() {
         private var instance: ToxTapAccessibilityService? = null
 
         fun performGlobalAction(action: Int): Boolean {
-            return instance?.performGlobalAction(action) ?: false
+            val service = instance
+            if (service == null) {
+                Log.e("ToxTap", "Accessibility service not running, cannot perform action: $action")
+                return false
+            }
+            return try {
+                service.performGlobalAction(action)
+            } catch (e: Exception) {
+                Log.e("ToxTap", "Error performing global action: $action", e)
+                false
+            }
         }
 
         fun isServiceRunning(): Boolean = instance != null

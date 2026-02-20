@@ -24,15 +24,18 @@ object ActionExecutor {
                 ActionType.RECENTS -> performAccessibilityAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_RECENTS, context)
                 ActionType.NOTIFICATIONS -> performAccessibilityAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS, context)
                 ActionType.LOCK_SCREEN -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    ToxTapAccessibilityService.performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
-                } else {
-                    Toast.makeText(context, "Lock Screen requires Android P+", Toast.LENGTH_SHORT).show()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        if (!performAccessibilityAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN, context)) {
+                            Log.e("ToxTap", "Failed to perform Lock Screen action")
+                        }
+                    } else {
+                        Toast.makeText(context, "Lock Screen requires Android P+", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
                 ActionType.LAUNCH_APP -> {
                     action.data?.let { packageName ->
-                        val intent = context.packageManager.getLaunchIntentForPackage(packageName)
+                        val pm = context.packageManager
+                        val intent = pm?.getLaunchIntentForPackage(packageName)
                         if (intent != null) {
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             context.startActivity(intent)
@@ -44,26 +47,28 @@ object ActionExecutor {
                 ActionType.TOGGLE_FLASHLIGHT -> toggleFlashlight(context)
                 ActionType.OPEN_SETTINGS_SCREEN -> {
                     action.data?.let { activityName ->
-                        val intent = Intent()
-                        intent.setClassName("com.android.settings", activityName)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        val intent = Intent().apply {
+                            setClassName("com.android.settings", activityName)
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
                         context.startActivity(intent)
                     }
                 }
                 ActionType.NONE -> {}
             }
         } catch (e: Exception) {
+            Log.e("ToxTap", "Action execution error", e)
             Toast.makeText(context, "Action failed: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun performAccessibilityAction(actionId: Int, context: Context) {
+    private fun performAccessibilityAction(actionId: Int, context: Context): Boolean {
         if (!ToxTapAccessibilityService.isServiceRunning()) {
             Toast.makeText(context, "Please enable ToxTap Accessibility Service", Toast.LENGTH_SHORT).show()
             PermissionManager.requestAccessibilityPermission(context)
-            return
+            return false
         }
-        ToxTapAccessibilityService.performGlobalAction(actionId)
+        return ToxTapAccessibilityService.performGlobalAction(actionId)
     }
 
     private fun toggleFlashlight(context: Context) {

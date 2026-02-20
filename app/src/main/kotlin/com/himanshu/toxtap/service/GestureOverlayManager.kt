@@ -2,6 +2,7 @@ package com.himanshu.toxtap.service
 
 import android.content.Context
 import android.graphics.PixelFormat
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import com.himanshu.toxtap.data.PreferenceManager
@@ -44,25 +45,24 @@ class GestureOverlayManager(private val context: Context) {
     fun showOverlay() {
         if (overlayView != null) return
 
-        val params = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT,
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-            else
-                @Suppress("DEPRECATION")
-                WindowManager.LayoutParams.TYPE_PHONE,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
-                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
-                    WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-            PixelFormat.TRANSLUCENT
-        )
+        try {
+            val params = WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                else
+                    @Suppress("DEPRECATION")
+                    WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                        WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+                PixelFormat.TRANSLUCENT
+            )
 
-        overlayView = FrameLayout(context).apply {
-            // Set alpha to a very small value so it's practically invisible but can still receive touches
-            // Or keep it transparent if background is null
-            background = null
+            overlayView = FrameLayout(context).apply {
+                background = null
             setOnTouchListener(object : View.OnTouchListener {
                 private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
                     override fun onDown(e: MotionEvent): Boolean {
@@ -106,12 +106,21 @@ class GestureOverlayManager(private val context: Context) {
         }
 
         windowManager.addView(overlayView, params)
+        } catch (e: Exception) {
+            Log.e("ToxTap", "Error showing overlay", e)
+            overlayView = null
+        }
     }
 
     fun hideOverlay() {
         overlayView?.let {
-            windowManager.removeView(it)
-            overlayView = null
+            try {
+                windowManager.removeView(it)
+            } catch (e: Exception) {
+                Log.e("ToxTap", "Error hiding overlay", e)
+            } finally {
+                overlayView = null
+            }
         }
     }
 
