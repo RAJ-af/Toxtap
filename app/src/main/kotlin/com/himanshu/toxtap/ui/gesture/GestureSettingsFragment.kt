@@ -40,6 +40,12 @@ class GestureSettingsFragment : Fragment() {
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.gestureSensitivity.collectLatest { sensitivity ->
+                binding.seekSensitivity.progress = sensitivity
+            }
+        }
+
         binding.switchOverlay.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 if (!PermissionManager.hasOverlayPermission(requireContext())) {
@@ -58,7 +64,35 @@ class GestureSettingsFragment : Fragment() {
             }
         }
 
+        binding.seekSensitivity.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) viewModel.setGestureSensitivity(progress)
+            }
+            override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {}
+        })
+
+        checkNativeGesture()
         setupGestureList()
+    }
+
+    private fun checkNativeGesture() {
+        val nativeSetting = viewModel.getNativeDoubleTapSetting()
+        if (nativeSetting != null) {
+            binding.cardNativeGesture.visibility = View.VISIBLE
+            binding.tvNativeDesc.text = "Detected: ${nativeSetting.label}. We recommend using this system feature instead of the app overlay for double-tap gestures."
+            binding.btnOpenNative.setOnClickListener {
+                val intent = Intent()
+                intent.setClassName(nativeSetting.packageName, nativeSetting.activityName)
+                try {
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(context, "Cannot open activity", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            binding.cardNativeGesture.visibility = View.GONE
+        }
     }
 
     private fun startForegroundService() {
